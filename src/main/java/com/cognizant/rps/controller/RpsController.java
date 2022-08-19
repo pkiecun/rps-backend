@@ -9,7 +9,6 @@ import java.util.Random;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000/")
-@RequestMapping("/play")
 public class RpsController {
 
     @GetMapping("/comp")
