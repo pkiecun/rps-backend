@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Random;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000/")
+@CrossOrigin(origins = "http://rps-frontend-mhcrew.s3-website.us-east-2.amazonaws.com", allowCredentials = "true")
 public class RpsController {
 
     @GetMapping("/comp")
