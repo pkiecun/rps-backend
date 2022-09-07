@@ -37,7 +37,7 @@ public class UserService {
         boolean verify = passwordEncoder.matches(attempt.getPassphrase(), getUser.getPassphrase());
 
         if (verify) {
-            getUser.setLogin(true);
+            getUser.setLogin(1);
             ur.save(getUser);
             return "Bearer " + jwt.generateToken(getUser);
         } else {
@@ -52,8 +52,8 @@ public class UserService {
         for(User name : registry){
             registered.add(name.getUsername());
         }
-        System.out.println("In register service");
-        User user = new User(0, attempt.getUsername(), attempt.getPassphrase(), true);
+        String encoded =  passwordEncoder.encode(attempt.getPassphrase());
+        User user = new User(0, attempt.getUsername(), encoded, 1);
         if(registered.add(user.getUsername())){
             ur.save(user);
             return "Bearer " + jwt.generateToken(user);

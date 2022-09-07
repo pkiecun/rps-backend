@@ -24,5 +24,5 @@ public class User {
 
     private String passphrase;
 
-    private boolean login;
+    private int login;
 }

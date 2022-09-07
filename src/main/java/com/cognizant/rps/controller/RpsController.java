@@ -49,7 +49,7 @@ public class RpsController {
 
     @PostMapping("/user/login")
     public Mono<String> handleLoginUser(@RequestBody LinkedHashMap<String, String> body){
-        User logger = new User(0,body.get("username"),body.get("password"), false);
+        User logger = new User(0,body.get("username"),body.get("passphrase"), 0);
         String verify = us.loggedIn(logger);
         if(!verify.equals("Wrong Password")){
             return Mono.just(verify);//, HttpStatus.ACCEPTED);
@@ -80,7 +80,7 @@ public class RpsController {
             user = ur.findByUsername(username);
 
         }
-        if(null != user && user.isLogin()){
+        if(null != user && user.getLogin() == 1){
             result = jwtUtility.validateToken(token, user);
 
         }
@@ -113,7 +113,7 @@ public class RpsController {
 
         }
         if(null != user) {
-            user.setLogin(false);
+            user.setLogin(0);
             ur.save(user);
             //new ResponseEntity<>( HttpStatus.NO_CONTENT);
         }else {
@@ -124,7 +124,7 @@ public class RpsController {
 
     @PostMapping("/user/register")
     public Mono<String> handleRegisterUser(@RequestBody LinkedHashMap<String, String> body){
-        User logger = new User(0, body.get("username"),body.get("password"), false);
+        User logger = new User(0, body.get("username"),body.get("passphrase"), 0);
         String verify = us.register(logger);
         if(!verify.equals("EXCEPTION ON LINE 61")){
             return Mono.just(verify);//, HttpStatus.ACCEPTED);
