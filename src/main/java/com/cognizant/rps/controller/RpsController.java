@@ -80,9 +80,10 @@ public class RpsController {
             user = ur.findByUsername(username);
 
         }
-        if(null != user && user.getLogin() == 1){
+        if(null != user && user.getLogin() == 1) {
+            System.out.println("this should not be null: " + result);
             result = jwtUtility.validateToken(token, user);
-
+            System.out.println("this should not be null: " + result);
         }
         return Mono.just(result);
 //        if(result){

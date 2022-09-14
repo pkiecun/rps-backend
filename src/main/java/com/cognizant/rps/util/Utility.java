@@ -73,6 +73,7 @@ public class Utility implements Serializable{
     //validate token
     public Boolean validateToken(String token, User userDetails) {
         final String username = getUsernameFromToken(token);
+        System.out.print("This should not be null: " + (username.equals(userDetails.getUsername()) && !isTokenExpired(token)));
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
