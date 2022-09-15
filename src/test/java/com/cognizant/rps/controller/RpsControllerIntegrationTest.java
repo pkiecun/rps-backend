@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -77,10 +78,10 @@ public class RpsControllerIntegrationTest {
 //    @Autowired
 //    private UserService us = new UserService(ur);
 
-    private ObjectMapper om = new ObjectMapper();
+    //private ObjectMapper om = new ObjectMapper();
 
     @Test
-    public void singlePlayerTest()throws Exception{
+    void singlePlayerTest()throws Exception{
 
         mockMvc.get().uri("http://localhost:8000/comp").header(HttpHeaders.ACCEPT, "application/json")
                 .exchange().expectStatus().isOk();
@@ -109,29 +110,29 @@ public class RpsControllerIntegrationTest {
 
     }
 
-//    @Test
-//    //@Transactional
-//    void handleAuthenticationTest() throws Exception {
-//
-//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//        String encodedPassword = passwordEncoder.encode("password");
-//        User user = new User(1001, "justin", encodedPassword, 1);
-//        //User somebody = new User(0, "username", "password", 0);
-//
-//        when((ur).findByUsername(anyString())).thenReturn(user);
-//        when(jwt.generateToken(any())).thenReturn("Bearer Hello I am a token");
-//        when(jwt.getUsernameFromToken(anyString())).thenReturn("justin");
-//
-//        String check = jwt.generateToken(user);
-//        System.out.println("check = " + check);
-//
-//        mockMvc.post().uri("/user/authenticate").header("Authorization", check)
-//                .exchange().expectStatus().isOk().expectBody()
-//                .jsonPath("$").isEqualTo(true);
-//    }
+    @Test
+    //@Transactional
+    void handleAuthenticationTest() throws Exception {
 
-//    @Test
-//    @Transactional
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode("password");
+        User user = new User(1001, "justin", encodedPassword, 1);
+        //User somebody = new User(0, "username", "password", 0);
+
+        when((ur).findByUsername(anyString())).thenReturn(user);
+        when(jwt.generateToken(any())).thenReturn("Bearer Hello I am a token");
+        when(jwt.getUsernameFromToken(anyString())).thenReturn("justin");
+
+        String check = jwt.generateToken(user);
+        System.out.println("check = " + check);
+
+        mockMvc.get().uri("/user/authenticate").header("Authorization", check)
+                .exchange().expectStatus().isOk().expectBody()
+                .jsonPath("$").isEqualTo(false);
+    }
+
+   // @Test
+//    //@Transactional
 //    void handleAuthenticationFailTimeTest() throws Exception {
 //        String check = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhIiwiZXhwIjoxNjYwMzM0NzcyLCJpYXQiOjE2NjAzMzExNzJ9.qSYYjwgxvw3v8BOm0bx1_8-Te1EKKTEeq-1BHBpFcWrJ0DvHx8ZYh3F2SBliYkybDmkmtgBjHiRWYW-FCXPF9w";
 //
@@ -139,7 +140,7 @@ public class RpsControllerIntegrationTest {
 //                .andExpect(status().isOk())
 //                .andExpect(jsonPath("$").value(false));
 //    }
-//
+
 //    @Test
 //    @Transactional
 //    void handleAuthenticationFailNameTest() throws Exception {
@@ -174,18 +175,17 @@ public class RpsControllerIntegrationTest {
 //                .andExpect(jsonPath("$").value(false));
 //    }
 //
-//    @Test
-//    @Transactional
-//    void handleFailLogoutTest() throws Exception {
-//        String check = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhIiwiZXhwIjoxNjYwMzM0NzcyLCJpYXQiOjE2NjAzMzExNzJ9.qSYYjwgxqw3v8BOm0bx1_8-Te1EKKTEeq-1BHBpFcWrJ0DvHx8ZYh3F2SBliYkybDmkmtgBjHiRWYW-FCXPF9w";
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/user/logout").
-//                header("Authorization",check)).
-//                andExpect(status().
-//                        isOk());
-//
-//    }
-//
+    @Test
+    //@Transactional
+    void handleFailLogoutTest() throws Exception {
+        String check = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhIiwiZXhwIjoxNjYwMzM0NzcyLCJpYXQiOjE2NjAzMzExNzJ9.qSYYjwgxqw3v8BOm0bx1_8-Te1EKKTEeq-1BHBpFcWrJ0DvHx8ZYh3F2SBliYkybDmkmtgBjHiRWYW-FCXPF9w";
+
+        mockMvc.get().uri("/user/logout").
+                header("Authorization",check).exchange().expectStatus().
+                        isOk();
+
+    }
+
     @Test
     //@Transactional
     void handleRegisterTest() throws Exception {
