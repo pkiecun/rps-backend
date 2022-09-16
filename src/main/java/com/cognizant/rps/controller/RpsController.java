@@ -60,8 +60,8 @@ public class RpsController {
     }
 
     @GetMapping("/user/authenticate")
-    public Mono<Boolean> handleAuthenticate(@RequestHeader Map<String, String> ticket) throws Exception{
-        String check = ticket.getHeader("Authorization");
+    public Mono<Boolean> handleAuthenticate(@RequestHeader LinkedHashMap<String, String> ticket) throws Exception{
+        String check = ticket.getHeader("token");
         String token = "";
         String username = "";
         User user = null;
@@ -94,8 +94,8 @@ public class RpsController {
     }
 
     @GetMapping("/user/logout")
-    public void handleLogout(@RequestHeader Map<String, String> ticket) {
-        String check = ticket.getHeader("Authorization");
+    public void handleLogout(@RequestHeader LinkedHashMap<String, String> ticket) {
+        String check = ticket.getHeader("token");
         String token = "";
         String username = "";
         User user = null;
