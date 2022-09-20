@@ -60,8 +60,8 @@ public class RpsController {
     }
 
     @GetMapping("/user/authenticate")
-    public Mono<Boolean> handleAuthenticate(HttpServletRequest ticket) throws Exception{
-        String check = ticket.getHeader("Authorization");
+    public Mono<Boolean> handleAuthenticate(@RequestHeader LinkedHashMap<String, String> ticket) throws Exception{
+        String check = ticket.get("token");
         String token = "";
         String username = "";
         User user = null;
@@ -80,9 +80,10 @@ public class RpsController {
             user = ur.findByUsername(username);
 
         }
-        if(null != user && user.getLogin() == 1){
+        if(null != user && user.getLogin() == 1) {
+            System.out.println("this should not be null: " + result);
             result = jwtUtility.validateToken(token, user);
-
+            System.out.println("this should not be null: " + result);
         }
         return Mono.just(result);
 //        if(result){
@@ -93,8 +94,8 @@ public class RpsController {
     }
 
     @GetMapping("/user/logout")
-    public void handleLogout(HttpServletRequest ticket) {
-        String check = ticket.getHeader("Authorization");
+    public void handleLogout(@RequestHeader LinkedHashMap<String, String> ticket) {
+        String check = ticket.get("token");
         String token = "";
         String username = "";
         User user = null;
