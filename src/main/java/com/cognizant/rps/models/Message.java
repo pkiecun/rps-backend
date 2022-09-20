@@ -12,6 +12,6 @@ import java.util.Date;
 public class Message {
     private String senderName;
     private String receiverName;
-    private String message;
+    private Match message;
     private Status status;
 }
