@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@CrossOrigin(origins = "http://rps-frontend-mhcrew.s3-website.us-east-2.amazonaws.com:3000/", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = "http://rps-frontend-mhcrew.s3-website.us-east-2.amazonaws.com/", allowCredentials = "true")
 public class RpsController {
 
     @Autowired
