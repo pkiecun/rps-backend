@@ -24,24 +24,55 @@ public class GameService {
         Game open = gr.save(starter);
         return  new Message(open.getPlayer1(),"",new Match(open.getGoal(),false, open.getMove1(), open.getId()), first.getStatus());
     }
-    public Message findMatch(Message second){
-        List<Game> lobbies = gr.findAll();
-        boolean found = false;
-        Message matched = new Message();
-        for(Game lobby: lobbies){
-            if(lobby.getPlayer2() != null && !lobby.getPlayer1().equals(second.getSenderName()) && !found && lobby.getGoal() == second.getMessage().getLimit()){
-                Game closing = gr.save(new Game(lobby.getId(), lobby.getPlayer1(), second.getSenderName(), lobby.getMove1(), second.getMessage().getMove(), lobby.getGoal()));
-                matched = new Message(closing.getPlayer1(), closing.getPlayer2(), new Match(closing.getGoal(), true, closing.getMove1(), closing.getId()),second.getStatus());
-                found = true;
+public Message findMatch(Message second){
+        Optional<Game> lobby = gr.findById(second.getMessage().getId());
+        if(lobby.isPresent()){
+            if (lobby.get().getPlayer1().equals(second.getSenderName()) && lobby.get().getMove1() == 0) {
+                Game opener = gr.save(new Game(lobby.get().getId(), lobby.get().getPlayer1(), lobby.get().getPlayer2(),
+                        second.getMessage().getMove(), lobby.get().getMove2(), lobby.get().getGoal()));
+                if (opener.getMove2() != 0) {
+                    Game follower = gr.save(new Game(0, lobby.get().getPlayer1(), lobby.get().getPlayer2(), 0, 0, 0));
+                    return new Message(opener.getPlayer2(), opener.getPlayer1(), new Match(opener.getGoal(), false, opener.getMove2(), follower.getId()), second.getStatus());
+                } else {
+                    return new Message(opener.getPlayer2(), opener.getPlayer1(), new Match(opener.getGoal(), true, opener.getMove2(), opener.getId()), second.getStatus());
+                }
+            } else if (lobby.get().getPlayer2().equals(second.getSenderName()) && lobby.get().getMove2() == 0) {
+                Game opener = gr.save(new Game(lobby.get().getId(), lobby.get().getPlayer1(), lobby.get().getPlayer2(), lobby.get().getMove1(),
+                        second.getMessage().getMove(), lobby.get().getGoal()));
+                if (opener.getMove1() != 0) {
+                    Game follower = gr.save(new Game(0, lobby.get().getPlayer1(), lobby.get().getPlayer2(), 0, 0, 0));
+                    return new Message(opener.getPlayer1(), opener.getPlayer2(), new Match(opener.getGoal(), false, opener.getMove1(), follower.getId()), second.getStatus());
+                } else {
+                    return new Message(opener.getPlayer1(), opener.getPlayer2(), new Match(opener.getGoal(), true, opener.getMove1(), opener.getId()), second.getStatus());
+                }
             }
         }
-        if(found){
-        return matched;}else{return new Message("NoMatch", second.getSenderName(), new Match(),second.getStatus());}
+        return new Message("NoMatch", second.getSenderName(), second.getMessage(), second.getStatus());
     }
     public Message findResult(Message third){
         Optional<Game> result = gr.findById(third.getMessage().getId());
         if(result.isPresent()){
             return new Message(result.get().getPlayer2(), result.get().getPlayer1(), new Match(result.get().getGoal(), true, result.get().getMove2(), result.get().getId()),third.getStatus());
         }else{return new Message("NoMatch", third.getSenderName(), new Match(),third.getStatus());}
+    }
+
+    public Message setGoal(Message setting){
+        List<Game> lobbies = gr.findAll();
+        boolean found = false;
+        for(Game lobby : lobbies){
+            if(!found && !lobby.getPlayer1().equals(setting.getSenderName()) && lobby.getPlayer2().equals("")
+                    && lobby.getGoal() == setting.getMessage().getLimit()){
+                lobby.setPlayer2(setting.getSenderName());
+                Game matched = gr.save(lobby);
+                found = true;
+                return new Message(matched.getPlayer1(), matched.getPlayer2(),
+                        new Match(matched.getGoal(), true , 0, matched.getId()),setting.getStatus());
+            }
+        }
+        if(!found){
+            Game unmatched = gr.save(new Game(0, setting.getSenderName(), "",0,0,setting.getMessage().getLimit()));
+            return new Message(setting.getSenderName(), setting.getSenderName(), new Match(unmatched.getGoal(), false,0, unmatched.getId()),setting.getStatus());
+        }
+        return setting;
     }
 }
