@@ -45,6 +45,36 @@ public class GameService {
                 } else {
                     return new Message(opener.getPlayer1(), opener.getPlayer2(), new Match(opener.getGoal(), opener.getMove1(), opener.getId()), second.getStatus());
                 }
+            }else if((lobby.get().getPlayer1().equals(second.getSenderName())||lobby.get().getPlayer2().equals(second.getSenderName())) && lobby.get().getMove1() != 0 && lobby.get().getMove2() != 0){
+                List<Game> lobbies = gr.findAll();
+                boolean unmatched = true;
+                if(lobby.get().getPlayer1().equals(second.getSenderName())){
+                    for(Game open : lobbies){
+                        if(unmatched && open.getPlayer1().equals(second.getSenderName()) && lobby.get().getPlayer2().equals(open.getPlayer2()) && open.getMove1() == 0){
+                            unmatched = false;
+                            return new Message(open.getPlayer2(), open.getPlayer1(),
+                                    new Match(open.getGoal(), lobby.get().getMove2(), open.getId()),
+                                    second.getStatus());
+                        }
+                    }
+                }else{
+                    for(Game open : lobbies){
+                    if(unmatched && open.getPlayer2().equals(second.getSenderName()) && lobby.get().getPlayer1().equals(open.getPlayer1()) && open.getMove2() == 0){
+                        unmatched = false;
+                        return new Message(open.getPlayer1(), open.getPlayer2(),
+                                new Match(open.getGoal(), lobby.get().getMove1(), open.getId()),
+                                second.getStatus());
+                    }
+                }
+                }
+            }else if(lobby.get().getMove1() == 0 || lobby.get().getMove2() == 0){
+                if(lobby.get().getPlayer1().equals(second.getSenderName())){
+                return new Message(lobby.get().getPlayer2(), second.getSenderName(),
+                        new Match(lobby.get().getGoal(),lobby.get().getMove2(),lobby.get().getId()),second.getStatus());
+                }else{
+                    return new Message(lobby.get().getPlayer1(), second.getSenderName(),
+                            new Match(lobby.get().getGoal(),lobby.get().getMove1(),lobby.get().getId()),second.getStatus());
+                }
             }
         }
         return new Message("NoMatch", second.getSenderName(), second.getMessage(), second.getStatus());
