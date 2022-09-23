@@ -35,12 +35,14 @@ public class MultiController {
 
     @PutMapping("/multi/find")
     public Mono<Message> handleFind(@RequestBody Message message){
-        return Mono.just(gs.findMatch(message));
+        Message partner = gs.findMatch(message);
+                return Mono.just(partner);
     }
+//        return Mono.just(gs.findMatch(message));
 
-    @PostMapping("/multi/result")
-    public Mono<Message> handleResult(@RequestBody Message message){
-        return Mono.just(gs.findResult(message));
-    }
+//    @PostMapping("/multi/result")
+//    public Mono<Message> handleResult(@RequestBody Message message){
+//        return Mono.just(gs.findResult(message));
+//    }
 
 }
