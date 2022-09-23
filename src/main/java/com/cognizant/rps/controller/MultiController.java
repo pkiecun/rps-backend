@@ -29,7 +29,7 @@ public class MultiController {
 
     @PostMapping("/multi/start")
     public Mono<Message> handleStart(@RequestBody Message body){
-        return Mono.just(gs.startMatch(body));
+        return Mono.just(gs.setGoal(body));
                 //new Message(body.get("senderName"), body.get("receiverName"), new Match(body.get("message")),Status.MESSAGE);
     }
 
