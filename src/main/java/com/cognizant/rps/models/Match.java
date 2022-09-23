@@ -10,7 +10,6 @@ import lombok.*;
 public class Match {
 
     private int limit;
-    private boolean count;
     private int move;
     private int id;
 
